@@ -1,25 +1,51 @@
-module Main exposing (..)
+module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html            exposing (Html, div, h1, input, text)
+import Html.Attributes exposing (value)
+import Html.Events     exposing (onInput)
+import String.Format
 
-main =
-    Browser.sandbox { init = 0, update = update, view = view }
+main : Program () Model Msg
+main = Browser.sandbox
+    { init   = init
+    , update = update
+    , view   = view
+    }
 
-type Msg = Increment | Decrement
+type alias Model =
+    { greeting     : String
+    , name         : String
+    , greetingName : String
+    }
 
+init : Model
+init = greet <| Model "Hello" "world" ""
+
+greet : Model -> Model
+greet model = { model | greetingName =
+    "{{ greeting }}, {{ name }}!"
+    |> String.Format.namedValue "greeting" model.greeting
+    |> String.Format.namedValue "name"     model.name
+    }
+
+type Msg
+    = SetGreeting String
+    | SetName     String
+
+update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment ->
-            model + 1
+        SetGreeting greeting ->
+            greet { model | greeting = greeting }
 
-        Decrement ->
-            model - 1
+        SetName name ->
+            greet { model | name = name }
 
+view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
+        [ h1 [] [ text <| model.greetingName ]
+        , input [ value model.greeting, onInput SetGreeting ] []
+        , input [ value model.name    , onInput SetName     ] []
         ]
