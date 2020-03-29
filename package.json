@@ -1,5 +1,5 @@
 {
-  "name": "typescript-template",
+  "name": "elm-template",
   "version": "1.0.0",
   "main": "dist/main.bundle.js",
   "author": "tana-gh <yozoranotakaku@gmail.com>",
@@ -10,7 +10,8 @@
     "build": "rm -rf dist && webpack --config ./build/webpack.prod.config.js"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.0"
+    "@babel/runtime": "^7.9.0",
+    "elm": "^0.19.1-3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -26,9 +27,10 @@
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
     "cssnano": "^4.1.10",
+    "elm-hot-webpack-loader": "^1.1.6",
+    "elm-webpack-loader": "^6.0.1",
     "fibers": "^4.0.2",
     "file-loader": "^6.0.0",
-    "fork-ts-checker-webpack-plugin": "^4.1.1",
     "html-webpack-plugin": "^3.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^25.1.0",
