@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "dev": "webpack serve --config ./build/webpack.dev.config.js",
-    "build": "webpack --config ./build/webpack.prod.config.js && yarn licenses list > THIRD_PARTY && cp THIRD_PARTY dist"
+    "build": "rm -rf dist/* && webpack --config ./build/webpack.prod.config.js && yarn licenses list > THIRD_PARTY && cp THIRD_PARTY dist"
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
