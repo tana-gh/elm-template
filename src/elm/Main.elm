@@ -24,6 +24,7 @@ main = Browser.application
 type alias Model =
     { key         : Nav.Key
     , route       : Route
+    , loading     : Bool
     , name        : String
     , helloText   : String
     , contentText : String
@@ -39,6 +40,7 @@ type Msg
     = UrlRequest     Browser.UrlRequest
     | UrlChange      Url.Url
     | Navigate       String
+    | SetLoading     Bool
     | SetName        String
     | SetContentText String
     | AddContent
@@ -46,12 +48,13 @@ type Msg
     | SendHello      String
     | ReceiveHello   String
 
-port sendHelloPort      : String -> Cmd msg
-port receiveHelloPort   : (String -> msg) -> Sub msg
+port loadingPort      : (Bool -> msg) -> Sub msg
+port sendHelloPort    : String -> Cmd msg
+port receiveHelloPort : (String -> msg) -> Sub msg
 
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init _ url key =
-    (Model key (toRoute url) "world" (helloString "world") "content" [], Cmd.none)
+    (Model key (toRoute url) True "world" (helloString "world") "content" [], Cmd.none)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -71,6 +74,8 @@ update msg model =
                         ({ model | route = route }, Cmd.none)
         Navigate url ->
             (model, Nav.pushUrl model.key url)
+        SetLoading loading ->
+            ({ model | loading = loading }, Cmd.none)
         SetName name ->
             ({ model | name = name }, Cmd.none)
         SetContentText text ->
@@ -99,10 +104,7 @@ routeParser =
         ]
 
 subscriptions : Model -> Sub Msg
-subscriptions _ = Sub.batch [ receiveHelloPort receiveHello ]
-
-receiveHello : String -> Msg
-receiveHello hello = ReceiveHello hello
+subscriptions _ = Sub.batch [ loadingPort SetLoading, receiveHelloPort ReceiveHello ]
 
 view : Model -> Browser.Document Msg
 view model =
@@ -119,7 +121,9 @@ view model =
             ]
         , main_ []
             [
-                lazy viewRoute model
+                if model.loading
+                then lazy text "Loading..."
+                else lazy viewRoute model
             ]
         ]
     }

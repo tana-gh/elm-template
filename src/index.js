@@ -7,6 +7,10 @@ const app = Elm.Main.init({
 
 const socket = new WebSocket('wss://echo.websocket.org')
 
+socket.addEventListener('open', () => {
+    app.ports.loadingPort.send(false)
+})
+
 app.ports.sendHelloPort.subscribe(message => {
     socket.send(message)
 })
