@@ -5,16 +5,12 @@ const app = Elm.Main.init({
     node: document.getElementById('app')
 })
 
-const socket = new WebSocket('wss://echo.websocket.org')
-
-socket.addEventListener('open', () => {
+setTimeout(() => {
     app.ports.loadingPort.send(false)
-})
+}, 1000)
 
 app.ports.sendHelloPort.subscribe(message => {
-    socket.send(message)
-})
-
-socket.addEventListener('message', ev => {
-    app.ports.receiveHelloPort.send(ev.data)
+    setTimeout(() => {
+        app.ports.receiveHelloPort.send(message)
+    }, 1000)
 })
